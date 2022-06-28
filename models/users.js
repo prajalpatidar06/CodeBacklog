@@ -1,40 +1,40 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const config = require("../config");
 const bcrypt = require("bcrypt");
 
 const UserSchema = new mongoose.Schema(
   {
-    Email: {
+    email: {
       type: String,
       required: true,
     },
-    EmailVerified: {
+    emailVerified: {
       type: Boolean,
       default: false,
     },
-    Password: {
+    username: {
       type: String,
       required: true,
     },
-    Name: {
-      First: {
+    password: {
+      type: String,
+      required: true,
+    },
+    name: {
+      first: {
         type: String,
-        required: true,
       },
-      Last: {
+      last: {
         type: String,
-        required: true,
       },
     },
-    EmailVerifyToken: { type: String },
   },
   { timestamps: true }
 );
 
 UserSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, config.JWT_SECRET, {
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, {
     expiresIn: "24h",
   });
   await user.save();
@@ -46,7 +46,7 @@ UserSchema.statics.findByCredentials = async function (email, password) {
   if (!user) {
     throw new Error("Unable to find User");
   }
-  const isMatch = await bcrypt.compare(password, user.Password);
+  const isMatch = await bcrypt.compare(password, user.password);
   if (isMatch) {
     return user;
   } else {
