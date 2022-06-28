@@ -109,7 +109,12 @@ module.exports.sign_in = async (req, res) => {
           success: true,
           message: "User Sign In Successfully",
           token,
-          user,
+          user: {
+            username: user.username,
+            id: user._id,
+            email: user.email,
+            name: user.name,
+          },
         });
       } else {
         return res.status(400).send({
