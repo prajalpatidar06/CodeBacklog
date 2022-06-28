@@ -34,8 +34,8 @@ mongoose
   })
   .then(() => {
     console.log("Connected to DB");
-    httpServer.listen(process.env.httpPort, () => {
-      console.log("App listninig in port" + process.env.httpPort);
+    httpServer.listen(process.env.PORT || 3000, () => {
+      console.log("App listninig in port" + process.env.PORT);
     });
     // httpsServer.listen(process.env.httpsPort, () => {
     //   console.log("App listning in port" + process.env.httpsPort);
