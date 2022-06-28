@@ -19,13 +19,13 @@ app.use(
 app.use(cors());
 app.use("/", require("./routers"));
 const httpServer = http.createServer(app);
-const httpsServer = https.createServer(
-  {
-    key: fs.readFileSync("./https/key.pem"),
-    cert: fs.readFileSync("./https/cert.pem"),
-  },
-  app
-);
+// const httpsServer = https.createServer(
+//   {
+//     key: fs.readFileSync("./https/key.pem"),
+//     cert: fs.readFileSync("./https/cert.pem"),
+//   },
+//   app
+// );
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -37,9 +37,9 @@ mongoose
     httpServer.listen(process.env.httpPort, () => {
       console.log("App listninig in port" + process.env.httpPort);
     });
-    httpsServer.listen(process.env.httpsPort, () => {
-      console.log("App listning in port" + process.env.httpsPort);
-    });
+    // httpsServer.listen(process.env.httpsPort, () => {
+    //   console.log("App listning in port" + process.env.httpsPort);
+    // });
   })
   .catch((e) => {
     console.log(e);
