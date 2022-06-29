@@ -44,7 +44,7 @@ regex = (type, data) => {
 
 problemObjectValidation = (data) => {
   const { problemUrl, status, notes, language, code } = data;
-  if (!problemUrl || !status || !notes || !language || !code)
+  if (!problemUrl || status === undefined || !notes || !language || !code)
     throw new Error("Must include Required fields");
 
   if (!regex("url", problemUrl)) throw new Error("Problem url is invalid");
