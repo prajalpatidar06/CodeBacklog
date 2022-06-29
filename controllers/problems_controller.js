@@ -3,7 +3,7 @@ const Problem = require("../models/problems");
 
 module.exports.getAllProblems = async function (req, res) {
   try {
-    const problems = await Problem.find()
+    const data = await Problem.find()
       .populate({
         path: "userId",
         select: {
@@ -13,7 +13,7 @@ module.exports.getAllProblems = async function (req, res) {
         },
       })
       .sort({ createdAt: -1 });
-    res.status(200).send({ success: true, problems });
+    res.status(200).send({ success: true, data });
   } catch (error) {
     res.status(400).send({ success: false, error: error.message });
   }
