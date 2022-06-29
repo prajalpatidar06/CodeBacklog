@@ -1,4 +1,5 @@
 const User = require("../models/users");
+const Problem = require("../models/problems");
 const Token = require("../models/tokens");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -114,6 +115,7 @@ module.exports.sign_in = async (req, res) => {
             id: user._id,
             email: user.email,
             name: user.name,
+            createdAt: user.createdAt,
           },
         });
       } else {
@@ -131,5 +133,43 @@ module.exports.sign_in = async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.status(400).send({ success: false, message: e.message });
+  }
+};
+
+module.exports.getAllUsers = async (req, res) => {
+  try {
+    let users = await User.find({}, { password: 0 }).sort({ username: 1 });
+    res.status(400).send({ success: true, users });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error.message });
+  }
+};
+
+module.exports.getAuther = async (req, res) => {
+  try {
+    res.status(200).send({
+      success: true,
+      user: req.user,
+    });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error.message });
+  }
+};
+
+module.exports.getUserById = async (req, res) => {
+  try {
+    let id = req.params.id;
+    let user = await User.findById(id, { password: 0 });
+    if (!user) {
+      res.status(400).send({ success: false, error: "Invalid user id" });
+    }
+    let problems = await Problem.find({ userId: id });
+    res.status(200).send({
+      success: true,
+      user,
+      problems,
+    });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error.message });
   }
 };
