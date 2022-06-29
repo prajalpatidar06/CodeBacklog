@@ -3,7 +3,7 @@ const User = require("../models/users");
 
 const getAuthenticated = async function (token) {
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const user = await User.findById(decoded._id);
+  const user = await User.findById(decoded._id, { password: 0 });
   if (!user) {
     throw new Error("Unauthorized");
   } else {
