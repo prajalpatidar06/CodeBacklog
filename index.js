@@ -3,8 +3,6 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 const http = require("http");
-const https = require("https");
-const fs = require("fs");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
@@ -18,14 +16,7 @@ app.use(
 );
 app.use(cors());
 app.use("/", require("./routers"));
-const httpServer = http.createServer(app);
-// const httpsServer = https.createServer(
-//   {
-//     key: fs.readFileSync("./https/key.pem"),
-//     cert: fs.readFileSync("./https/cert.pem"),
-//   },
-//   app
-// );
+const Server = http.createServer(app);
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -34,12 +25,9 @@ mongoose
   })
   .then(() => {
     console.log("Connected to DB");
-    httpServer.listen(process.env.PORT || 3000, () => {
-      console.log("App listninig in port" + process.env.PORT);
+    Server.listen(process.env.PORT || 3000, () => {
+      console.log("App listninig in port " + (process.env.PORT || 3000));
     });
-    // httpsServer.listen(process.env.httpsPort, () => {
-    //   console.log("App listning in port" + process.env.httpsPort);
-    // });
   })
   .catch((e) => {
     console.log(e);
