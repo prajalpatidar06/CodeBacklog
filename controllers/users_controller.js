@@ -84,7 +84,7 @@ module.exports.sign_up = async (req, res) => {
 
 module.exports.verifyToken = async (req, res) => {
   try {
-    const user = await User.findOne({ id: req.params.id });
+    const user = await User.findOne({ _id: req.params.id });
     if (!user) return res.status(400).send({ message: "Invalid link" });
 
     const token = await Token.findOne({
@@ -93,7 +93,7 @@ module.exports.verifyToken = async (req, res) => {
     });
     if (!token) return res.status(400).send({ message: "Invalid link" });
 
-    await User.updateOne({ _id: user._id, emailVerified: true });
+    await User.updateOne({ _id: user._id }, { emailVerified: true });
     await token.remove();
 
     res.status(200).send({ message: "Email verified successfully" });
