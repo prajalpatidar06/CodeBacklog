@@ -11,21 +11,21 @@ module.exports.sign_up = async (req, res) => {
     if (!regex("username", req.body.username)) {
       return res.send({
         success: false,
-        message: "Username is not Valid",
+        error: "Username is not Valid",
       });
     }
 
     if (!regex("password6LUN", req.body.password)) {
       return res.send({
         success: false,
-        message:
+        error:
           "The password must contain one lowercase letter, one uppercase letter, one number, and be at least 6 characters long",
       });
     }
     if (!regex("email", req.body.email)) {
       return res.send({
         success: false,
-        message: "Email is not Valid",
+        error: "Email is not Valid",
       });
     }
 
@@ -36,7 +36,7 @@ module.exports.sign_up = async (req, res) => {
     if (isEmail) {
       return res.send({
         success: false,
-        message: "Email already Registered",
+        error: "Email already Registered",
       });
     }
     const isUserName = await User.countDocuments({
@@ -46,7 +46,7 @@ module.exports.sign_up = async (req, res) => {
     if (isUserName) {
       return res.send({
         success: false,
-        message: "Username already Exist",
+        error: "Username already Exist",
       });
     }
 
@@ -77,28 +77,30 @@ module.exports.sign_up = async (req, res) => {
         "User Sign Up Successfully, Check your MailBox and verify your account",
     });
   } catch (e) {
-    console.log(e);
-    return res.status(400).send(e.message);
+    return res.status(400).send({
+      success: false,
+      error: e.message,
+    });
   }
 };
 
 module.exports.verifyToken = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
-    if (!user) return res.status(400).send({ message: "Invalid link" });
+    if (!user) return res.status(400).send({ error: "Invalid link" });
 
     const token = await Token.findOne({
       userId: user._id,
       token: req.params.token,
     });
-    if (!token) return res.status(400).send({ message: "Invalid link" });
+    if (!token) return res.status(400).send({ error: "Invalid link" });
 
     await User.updateOne({ _id: user._id }, { emailVerified: true });
     await token.remove();
 
     res.status(200).send({ message: "Email verified successfully" });
   } catch (error) {
-    res.status(500).send({ message: "Internal Server Error" });
+    res.status(500).send({ error: "Internal Server Error" });
   }
 };
 
@@ -126,18 +128,18 @@ module.exports.sign_in = async (req, res) => {
       } else {
         return res.status(400).send({
           success: false,
-          message: "Your Email is not verified",
+          error: "Your Email is not verified",
         });
       }
     } else {
       return res.status(400).send({
         success: false,
-        message: "User not exist",
+        error: "User not exist",
       });
     }
   } catch (e) {
     console.log(e);
-    return res.status(400).send({ success: false, message: e.message });
+    return res.status(400).send({ success: false, error: e.message });
   }
 };
 
