@@ -98,7 +98,7 @@ module.exports.verifyToken = async (req, res) => {
     await User.updateOne({ _id: user._id }, { emailVerified: true });
     await token.remove();
 
-    res.status(200).send({ message: "Email verified successfully" });
+    res.status(200).send('<h1>Email verified successfully<h1><h1><a href="">Visit Website</a><h1>');
   } catch (error) {
     res.status(500).send({ error: "Internal Server Error" });
   }
