@@ -3,17 +3,15 @@ const Problem = require("../models/problems");
 
 module.exports.getAllProblems = async function (req, res) {
   try {
-    const data = await Problem.find()
+    const problems = await Problem.find()
       .populate({
         path: "userId",
         select: {
           username: 1,
-          name: 1,
-          email: 1,
         },
       })
       .sort({ createdAt: -1 });
-    res.status(200).send({ success: true, data });
+    res.status(200).send({ success: true, problems });
   } catch (error) {
     res.status(400).send({ success: false, error: error.message });
   }
@@ -21,10 +19,10 @@ module.exports.getAllProblems = async function (req, res) {
 
 module.exports.getAutherProblems = async function (req, res) {
   try {
-    let data = await Problem.find({ userId: req.user.id }).sort({
+    let autherProblems = await Problem.find({ userId: req.user.id }).sort({
       createdAt: -1,
     });
-    res.status(200).send({ success: true, data });
+    res.status(200).send({ success: true, autherProblems });
   } catch (error) {
     res.status(400).send({ success: false, error: error.message });
   }
@@ -33,8 +31,8 @@ module.exports.getAutherProblems = async function (req, res) {
 module.exports.getProblemById = async function (req, res) {
   try {
     let id = req.params.id;
-    let data = await Problem.findById(id);
-    res.status(200).send({ success: true, data });
+    let problem = await Problem.findById(id);
+    res.status(200).send({ success: true, problem });
   } catch (error) {
     res.status(400).send({ success: false, error: error.message });
   }
@@ -48,7 +46,7 @@ module.exports.createProblem = async function (req, res) {
     await newProblem.save();
     res.status(200).send({
       success: true,
-      Problem: newProblem,
+      problem: newProblem,
     });
   } catch (error) {
     res.status(400).send({
@@ -86,7 +84,7 @@ module.exports.updateProblem = async function (req, res) {
         data.language = req.body.language.trim();
       }
       await data.save();
-      res.status(200).send({ success: true, data });
+      res.status(200).send({ success: true, problem: data });
     } else {
       res.status(400).send({ success: false, error: "invalid id" });
     }
