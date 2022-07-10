@@ -31,7 +31,12 @@ module.exports.getAutherProblems = async function (req, res) {
 module.exports.getProblemById = async function (req, res) {
   try {
     let id = req.params.id;
-    let problem = await Problem.findById(id);
+    let problem = await Problem.findById(id).populate({
+      path: "userId",
+      select: {
+        username: 1,
+      },
+    });
     res.status(200).send({ success: true, problem });
   } catch (error) {
     res.status(400).send({ success: false, error: error.message });
